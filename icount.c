@@ -1,3 +1,5 @@
+//https://docs.python.org/2/library/stat.html
+// LEONARDO NEVES E FELIPE PAIXAO
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -47,9 +49,9 @@ Sua tarefa é utilizar walk_dir para construir o programa icount, que informa a 
 INODEs de um determinado tipo em cada um dos diretórios cujos caminhos são dados como argumentos:
 icount [-rdlbc] [<dir> ...]
 onde os modificadores rdlbc têm os seguintes significados:
- -r: arquivo regular (S_IFREG)
+ -r: arquivo regularesular (S_IFregulares)
  -d: diretório (S_IFDIR)
- -l: elo simbólico (S_IFLNK)
+ -l: elos simbólico (S_IFLNK)
  -b: dispositivo estruturado (S_IFBLK)
  -c: dispositivo não-estruturado (S_IFCHR)
 <dir>: caminho para diretório
@@ -58,10 +60,10 @@ invocação do programa. Na ausência de modificadores, deve ser assumido -r. Na
 para diretórios, deve ser assumido o diretório corrente. Utilize a função getopt da biblioteca padrão
 para obter e tratar educadamente os modificadores do programa.
 Exemplos:
-icount /etc conta arquivos regulares em “/etc”
+icount /etc conta arquivos regularesulares em “/etc”
 icount -d /home conta subdiretórios em “/home”
 icount -b /dev conta dispositivos estruturados em “/dev”
-icount conta arquivos regulares em “.”
+icount conta arquivos regularesulares em “.”
 */
 
 
@@ -100,11 +102,11 @@ void printdir(char *dir, int space){
 
 
 
-void icount(char *dir){
+void icount(char parametro, char *dir){
 		DIR *dp;
 		struct dirent *entry;
 		struct stat statbuf;
-		int todos=0, reg=0, folder=0, elo=0, estrut=0,nestrut=0,outro=0;
+		int todos=0, regulares=0, pastas=0, elos=0, estrut=0,nestrut=0,outro=0;
 
 		if((dp = opendir(dir)) == NULL) {
 				fprintf(stderr,"cannot open directory: %s\n", dir);
@@ -124,41 +126,78 @@ void icount(char *dir){
 				//ignorar pasta atual e pasta pai
  				if(strcmp(".",entry->d_name) == 0 || strcmp("..",entry->d_name) == 0) continue;
 
-				 /*-r: arquivo regular (S_IFREG)
+				 /*
+				 -r: arquivo regularesular (S_IFregulares)
 				 -d: diretório (S_IFDIR)
-				 -l: elo simbólico (S_IFLNK)
+				 -l: elos simbólico (S_IFLNK)
 				 -b: dispositivo estruturado (S_IFBLK)
-				 -c: dispositivo não-estruturado (S_IFCHR)*/
+				 -c: dispositivo não-estruturado (S_IFCHR)
+
+				 https://docs.python.org/2/library/stat.html
+				 S_IFMT = Return the portion of the file’s mode that describes the file type.*/
 				
 
-				if( statbuf.st_mode & S_IFDIR) {
-		 				printf(">>  %s  <<\n",entry->d_name);
-						todos++; folder++;
+				if( (statbuf.st_mode & S_IFMT) == S_IFDIR) {
+		 				if(parametro == 'd') printf(">>  %s \n",entry->d_name);
+						todos++; pastas++;
 				}
-					 if( statbuf.st_mode & S_IFLNK) {
-		 				printf("@ %s \n",entry->d_name);
-						todos++; elo++;
+				else if( (statbuf.st_mode & S_IFMT) == S_IFLNK) {
+		 				if(parametro == 'l') printf("@ %s \n",entry->d_name);
+						todos++; elos++;
 				}
-					 if( statbuf.st_mode & S_IFBLK) {
-		 				printf("# %s \n",entry->d_name);
+				else if( (statbuf.st_mode & S_IFMT) == S_IFBLK) {
+		 				if(parametro == 'b') printf("# %s \n",entry->d_name);
 						todos++; estrut++;
 				}
-					 if( statbuf.st_mode & S_IFCHR) {
-		 				printf("* %s \n",entry->d_name);
+				else if( (statbuf.st_mode & S_IFMT) == S_IFCHR) {
+		 				if(parametro == 'c') printf("* %s \n",entry->d_name);
 						todos++; nestrut++;
 				}
-					 if( statbuf.st_mode & S_IFREG) {
-		 				printf("_%s \n",entry->d_name);
-						todos++; reg++;
+				else if( (statbuf.st_mode & S_IFMT) == S_IFREG) {
+		 				if(parametro == 'r') printf(" %s \n",entry->d_name);
+						todos++; regulares++;
 				}
-				// else	{
-				// 	printf("%s \n",entry->d_name);
-				// 	todos++; outro++;
-				// }
+				else{
+	 				//printf(" %s \n",entry->d_name);
+					outro++;
+
+				}
+
+				 
 		}
 		chdir("..");
 		closedir(dp);
-		printf("____________\nTODOS:%i\n(_)regular=%i\t(>>)folder=%i\t(@)elo=%i\t\n(#)estrut=%i\t(*)nestrut=%i\toutros=%i\n", todos,reg,folder,elo,estrut,nestrut,outro);
+
+
+		printf("____________\n");
+		switch ( parametro )  {
+			case 'r' :
+			printf ("regulares = %i\n",regulares);
+			break;
+
+			case 'd' :
+			printf ("Diretorios = %i\n",pastas);
+			break;
+
+			case 'l' :
+			printf ("elos = %i\n",elos);
+			break;
+
+			case 'b' :
+			printf ("Estruturados = %i\n",estrut);
+			break;
+
+			case 'c' :
+			printf ("Nao estruturados = %i\n",nestrut);
+			break;
+
+			default :
+			printf("TODOS:%i\n( )regulares=%i\t(>>)pastas=%i\t(@)elos=%i\t\n(#)estrut=%i\t(*)nestrut=%i\t(_)outros=%i\n", todos,regulares,pastas,elos,estrut,nestrut,outro);
+		}
+ 
+
+
+		
 
 }
 
@@ -168,17 +207,54 @@ void icount(char *dir){
 int main( int argc, char *argv[ ] ){
    	int cont=0;
    	char *full_path;
+   	char parametro;
+
+
+	if (argc == 1) {
+   		parametro ='r';
+   		//full_path = '';
+   		full_path = ".";
+   	}
+
+	else if (argc == 2) {
+   		if(argv[1][0] == '-' && argv[1][2] == NULL ) {
+   			parametro = argv[1][1];
+   			full_path = ".";
+   		}
+
+   		else {
+   			parametro ='r';
+   			full_path =  argv[1];
+   		}
+   	}
+
+
+   	else if (argc == 3 && argv[1][0] == '-') {
+   			parametro = argv[1][1];
+   			full_path = argv[2];
+   	}
    	
+   	 	
+   	else { 
+   		printf("Os parametros foram inseridos da forma errada \ntente: icount [-rdlbc] [<dir> ...]\n"); 
+   		return;
+   	}
+
    	//printar parametros
    	//printf("Funcao: %s\n", argv[cont]);
    	//if ( argc <=1) return;
    	//else for(cont=1; cont < argc; cont++) printf("  Parametro %d:  %s\n", cont,argv[cont]);
 
+
+
     //PRINT DIRETORIO DO PRIMEIRO ARGUMENTO
     //printdir(argv[1],2);
 
-   	//sem usar walk_dir
-    icount(argv[1]);
 
+
+   	//sem usar walk_dir
+    icount(parametro,full_path);
+	
     return 0;
+
 }

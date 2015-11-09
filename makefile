@@ -16,7 +16,15 @@ pwd:
 	@gcc icount.c -o icount
 	@gcc icount.c
 	@echo "______________________________________________________________executando"
-	@./a.out /home/leonardo/ufrj/so2
+	./a.out
+	@echo "------------------------------------------------" 
+	./a.out -d 
+	@echo "------------------------------------------------" 
+	./a.out /home/leonardo/ufrj/so2
+	@echo "------------------------------------------------" 
+	./a.out -d /home/leonardo/ufrj/so2
+	@echo "------------------------------------------------" 
+	./a.out /home/leonardo/ufrj/so2 -d
 	@echo "______________________________________________________________limpando"
 	@rm a.out
 
