@@ -1,8 +1,12 @@
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <unistd.h>
+
+
 
 
 int walk_dir (const char *path, void (*func) (const char *)){
@@ -61,9 +65,8 @@ icount conta arquivos regulares em “.”
 */
 
 
-/*
-//CODIGO COM FUNCOES QUE SERAO UTEIS
 
+//funcao da ultima aula
 void printdir(char *dir, int space){
 		DIR *dp;
 		struct dirent *entry;
@@ -90,25 +93,92 @@ void printdir(char *dir, int space){
 		closedir(dp);
 }
 
-*/
 
 
 
-//contar arquivos de cada tipo na pasta especificada
-int main( int argc, char *argv[ ] ){
-   int cont;
-    for(cont=0; cont < argc; cont++)
-        printf("%d Parametro: %s\n", cont,argv[cont]);
-    getch();
-    return 0;
+
+
+
+
+void icount(char *dir){
+		DIR *dp;
+		struct dirent *entry;
+		struct stat statbuf;
+		int todos=0, reg=0, folder=0, elo=0, estrut=0,nestrut=0,outro=0;
+
+		if((dp = opendir(dir)) == NULL) {
+				fprintf(stderr,"cannot open directory: %s\n", dir);
+				return;
+		} 
+		else{
+			printf("\nPasta: %s \n\n",dir);
+		}
+
+
+		chdir(dir);
+		while((entry = readdir(dp)) != NULL) {
+
+				//copia o statbuff para o entry.d_name
+				lstat(entry->d_name, &statbuf);
+
+				//ignorar pasta atual e pasta pai
+ 				if(strcmp(".",entry->d_name) == 0 || strcmp("..",entry->d_name) == 0) continue;
+
+				 /*-r: arquivo regular (S_IFREG)
+				 -d: diretório (S_IFDIR)
+				 -l: elo simbólico (S_IFLNK)
+				 -b: dispositivo estruturado (S_IFBLK)
+				 -c: dispositivo não-estruturado (S_IFCHR)*/
+				
+
+				if( statbuf.st_mode & S_IFDIR) {
+		 				printf(">>  %s  <<\n",entry->d_name);
+						todos++; folder++;
+				}
+					 if( statbuf.st_mode & S_IFLNK) {
+		 				printf("@ %s \n",entry->d_name);
+						todos++; elo++;
+				}
+					 if( statbuf.st_mode & S_IFBLK) {
+		 				printf("# %s \n",entry->d_name);
+						todos++; estrut++;
+				}
+					 if( statbuf.st_mode & S_IFCHR) {
+		 				printf("* %s \n",entry->d_name);
+						todos++; nestrut++;
+				}
+					 if( statbuf.st_mode & S_IFREG) {
+		 				printf("_%s \n",entry->d_name);
+						todos++; reg++;
+				}
+				// else	{
+				// 	printf("%s \n",entry->d_name);
+				// 	todos++; outro++;
+				// }
+		}
+		chdir("..");
+		closedir(dp);
+		printf("____________\nTODOS:%i\n(_)regular=%i\t(>>)folder=%i\t(@)elo=%i\t\n(#)estrut=%i\t(*)nestrut=%i\toutros=%i\n", todos,reg,folder,elo,estrut,nestrut,outro);
+
 }
 
 
+//executar :  icount pasta
+//contar arquivos de cada tipo na pasta especificada
+int main( int argc, char *argv[ ] ){
+   	int cont=0;
+   	char *full_path;
+   	
+   	//printar parametros
+   	//printf("Funcao: %s\n", argv[cont]);
+   	//if ( argc <=1) return;
+   	//else for(cont=1; cont < argc; cont++) printf("  Parametro %d:  %s\n", cont,argv[cont]);
 
+    //PRINT DIRETORIO DO PRIMEIRO ARGUMENTO
+    //printdir(argv[1],2);
 
+   	//sem usar walk_dir
+    icount(argv[1]);
 
-
-
-
-
-
+    return 0;
+}
