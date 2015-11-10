@@ -44,7 +44,7 @@ int main( int argc, char *argv[ ] ){
 				parametro = argv[1][1];
    				full_path = ".";
    			}
-   			//caso o parametro tenha duas ou mais letras >  erro
+   			//caso o parametro tenha duas ou mais letras > erro
    			else {
    				printf("Os parametros foram inseridos da forma errada \ntente: icount [-rdlbc] [<dir> ...]\n"); 
    				return;
@@ -106,6 +106,7 @@ int main( int argc, char *argv[ ] ){
 		default :
 		printf("O parametro desejado nao faz parte da nossa lista, veja todos os tipos conhecidos dentre os _%i_ inodes:\n",todos);
 		printf("\t( ) reg=%i\t(>>) pastas=%i\t(@) elos=%i\t\n\t(#) estrut=%i\t( *) nestrut=%i\t(_) outros=%i\n",regulares,pastas,elos,estrut,nestrut,outro);
+		printf("\nelos ==%d\n",elos);
 	}
 	
     return 0;
@@ -143,8 +144,10 @@ void icount2(char *inode){
 				todos++; pastas++;
 		}
 		else if( (statbuf.st_mode & S_IFMT) == S_IFLNK) {
+				printf("----------------1");
  				if(parametro == 'l') printf("@ %s \n",inode);
 				todos++; elos++;
+				printf("----------------2");
 		}
 		else if( (statbuf.st_mode & S_IFMT) == S_IFBLK) {
  				if(parametro == 'b') printf("# %s \n",inode);
@@ -159,7 +162,7 @@ void icount2(char *inode){
 				todos++; regulares++;
 		}
 		else{
-				//printf(" %s \n",inode);
+				//printf("----------- %s \n",inode);
 			outro++;
 
 		}
