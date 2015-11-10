@@ -192,8 +192,8 @@ void icount(char parametro, char *dir){
 			break;
 
 			default :
-			printf("O parametro desejado nao faz parte da nossa lista, veja todos os tipos conhecidos:\n");
-			printf("\t( ) reg=%i\t(>>) pastas=%i\t(@) elos=%i\t\n\t(#) estrut=%i\t( *) nestrut=%i\t(_) outros=%i\n", todos,regulares,pastas,elos,estrut,nestrut,outro);
+			printf("O parametro desejado nao faz parte da nossa lista, veja todos os tipos conhecidos dentre os %i inodes:\n",todos);
+			printf("\t( ) reg=%i\t(>>) pastas=%i\t(@) elos=%i\t\n\t(#) estrut=%i\t( *) nestrut=%i\t(_) outros=%i\n",regulares,pastas,elos,estrut,nestrut,outro);
 		}
  
 
