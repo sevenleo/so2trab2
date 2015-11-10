@@ -28,18 +28,29 @@ int main( int argc, char *argv[ ] ){
    	char *full_path;
 
 
+
+   	//sem argumentos . parametros regulares e diretorio atual
 	if (argc == 1) {
    		parametro ='r';
-   		//full_path = '';
    		full_path = ".";
    	}
 
-	else if (argc == 2) {
-   		if(argv[1][0] == '-' && argv[1][2] == '\0' ) {
-   			parametro = argv[1][1];
-   			full_path = ".";
-   		}
 
+	else if (argc == 2) {
+
+		//parametro dado e diretorio atual
+   		if(argv[1][0] == '-' ) {
+   			if (argv[1][2] == '\0') {
+				parametro = argv[1][1];
+   				full_path = ".";
+   			}
+   			//caso o parametro tenha duas ou mais letras >  erro
+   			else {
+   				printf("Os parametros foram inseridos da forma errada \ntente: icount [-rdlbc] [<dir> ...]\n"); 
+   				return;
+   			}
+   		}
+   		//diretorio dado e parametro r = regulares
    		else {
    			parametro ='r';
    			full_path =  argv[1];
@@ -48,8 +59,13 @@ int main( int argc, char *argv[ ] ){
 
 
    	else if (argc == 3 && argv[1][0] == '-') {
-   			parametro = argv[1][1];
-   			full_path = argv[2];
+   			if (argv[1][2] == '\0') {
+   				parametro = argv[1][1];
+   				full_path = argv[2];
+   			}else { 
+   				printf("Os parametros foram inseridos da forma errada \ntente: icount [-rdlbc] [<dir> ...]\n"); 
+   				return;
+   			}
    	}
    	
    	 	
