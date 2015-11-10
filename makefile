@@ -5,7 +5,7 @@ all:
 	@gcc icount.c -o icount
 	@gcc icount.c
 	@echo "______________________________________________________________executando"
-	@./a.out
+	@./a.out -d /home/leonardo/ufrj/so2
 	@echo "______________________________________________________________limpando"
 	@rm a.out
 
