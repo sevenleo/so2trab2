@@ -8,6 +8,9 @@
 #include <dirent.h>
 #include <unistd.h>
 
+//////#DEFINE NAME_MAX ??????????
+
+
 int todos=0, regulares=0, pastas=0, elos=0, estrut=0,nestrut=0,outro=0;
 char parametro;
 void icount2(char *inode);
@@ -86,7 +89,7 @@ int main( int argc, char *argv[ ] ){
 
 		default :
 		printf("O parametro desejado nao faz parte da nossa lista, veja todos os tipos conhecidos dentre os _%i_ inodes:\n",todos);
-		printf("\t( ) reg=%i\t(>>) pastas=%i\t\t(@) elos=%i\t\n\t(#) estrut=%i\t( *) nestrut=%i\t(_) outros=%i\n",regulares,pastas,elos,estrut,nestrut,outro);
+		printf("\t( ) reg=%i\t(>>) pastas=%i\t(@) elos=%i\t\n\t(#) estrut=%i\t( *) nestrut=%i\t(_) outros=%i\n",regulares,pastas,elos,estrut,nestrut,outro);
 	}
 	
     return 0;
